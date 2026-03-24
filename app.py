@@ -1,6 +1,9 @@
 import customtkinter as ctk
 from data import BirdData
 
+if __name__ == '__main__':
+    raise RuntimeError("Hey! Don't run app.py (run main.py only)")
+
 class App(ctk.CTk):
     def __init__(self):
         super().__init__()

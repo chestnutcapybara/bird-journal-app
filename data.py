@@ -1,5 +1,7 @@
 import json
 import os
+if __name__ == '__main__':
+    raise RuntimeError("Hey! Don't run data.py (run main.py only)")
 
 class BirdData:
     def __init__(self, file="birds.json"):
