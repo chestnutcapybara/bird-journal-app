@@ -21,17 +21,50 @@ class App(ctk.CTk):
         self.after(0, lambda: self.state("zoomed"))
 
     def setup_ui(self):
-        self.name_entry = ctk.CTkEntry(self, placeholder_text="Bird name")
-        self.name_entry.pack(pady=10)
+    # Add Bird button (always visible)
+        self.open_add_btn = ctk.CTkButton(
+        self,
+        text="➕ Add Bird",
+        command=self.toggle_add_menu
+    )
+        self.open_add_btn.pack(pady=10)
 
-        self.notes_entry = ctk.CTkEntry(self, placeholder_text="Notes")
-        self.notes_entry.pack(pady=10)
+    # Add Bird panel (hidden by default)
+        self.add_frame = ctk.CTkFrame(self)
+    
+        self.name_entry = ctk.CTkEntry(self.add_frame, placeholder_text="Bird name")
+        self.name_entry.pack(pady=5, padx=10)
 
-        self.add_button = ctk.CTkButton(self, text="Add Bird", command=self.add_bird)
-        self.add_button.pack(pady=10)
+        self.notes_entry = ctk.CTkEntry(self.add_frame, placeholder_text="Notes")
+        self.notes_entry.pack(pady=5, padx=10)
 
+        self.save_btn = ctk.CTkButton(
+        self.add_frame,
+        text="Save Bird",
+        command=self.add_bird
+        )
+        self.save_btn.pack(pady=5)
+
+        self.close_btn = ctk.CTkButton(
+        self.add_frame,
+        text="Cancel",
+        command=self.toggle_add_menu
+        )
+        self.close_btn.pack(pady=5)
+
+    # Bird list
         self.list_frame = ctk.CTkFrame(self)
         self.list_frame.pack(fill="both", expand=True, padx=20, pady=20)
+
+        self.add_visible = False
+
+    def toggle_add_menu(self):
+        if self.add_visible:
+            self.add_frame.pack_forget()
+            self.add_visible = False
+        else:
+            self.add_frame.pack(pady=10)
+            self.add_visible = True
 
     def add_bird(self):
         name = self.name_entry.get()
@@ -41,6 +74,12 @@ class App(ctk.CTk):
             self.data.add_bird(name, notes)
             self.refresh_list()
 
+            # clear inputs
+            self.name_entry.delete(0, "end")
+            self.notes_entry.delete(0, "end")
+
+            # hide menu after adding
+            self.toggle_add_menu()
     def refresh_list(self):
         for widget in self.list_frame.winfo_children():
             widget.destroy()

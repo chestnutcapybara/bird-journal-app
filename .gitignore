@@ -5,3 +5,12 @@ __pycache__
 desktop.ini
 
 .DS_Store
+
+.vs
+
+.env
+
+.idea
+
+.vscode
+
