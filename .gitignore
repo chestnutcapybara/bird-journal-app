@@ -1,16 +1,18 @@
-.venv
-
-__pycache__
-
-desktop.ini
-
-.DS_Store
-
+# Code editor trashy files :|
 .vs
-
-.env
-
+.vscode
 .idea
 
-.vscode
+# Secret information nobody can see
+.env
+
+# Virtual environments
+.venv
+venv
+
+# System useless files
+__pycache__
+desktop.ini
+.DS_Store
+
 

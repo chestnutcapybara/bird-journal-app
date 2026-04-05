@@ -1,12 +1,16 @@
-import json, os, requests
+# IMPORTS
+import json
+import os
+import requests
 
+#class that will check for updates
 class CheckForUpdate:
     def __init__(self):
-        self.local_version_file = "version.json"
+        self.local_version_file = "version.json" 
         self.online_version_url = "https://raw.githubusercontent.com/chestnutcapybara/bird-journal-app/main/version.json"
-        self.game_folder = "miencraft-game"
 
     def get_local_version(self):
+        #use the standard library JSON module to look at the local version.json.
         if not os.path.exists(self.local_version_file):
             return None
         try:
@@ -17,6 +21,7 @@ class CheckForUpdate:
             return None
 
     def get_online_version(self):
+        # Use requests to GRAB the online version
         try:
             r = requests.get(self.online_version_url, timeout=5)
             r.raise_for_status()
@@ -31,6 +36,3 @@ class CheckForUpdate:
         self.online = self.get_online_version()
         if self.online and self.local != self.online:
             print("Pretending to open updater.exe...")
-
-checkforupdate = CheckForUpdate()
-checkforupdate.check_for_updates()
