@@ -1,6 +1,8 @@
 import customtkinter as ctk
 from data import BirdData
 
+from check_for_update import CheckForUpdate
+
 if __name__ == '__main__':
     raise RuntimeError("Hey! Don't run app.py (run main.py only)")
 
@@ -28,7 +30,12 @@ class App(ctk.CTk):
         command=self.toggle_add_menu
     )
         self.open_add_btn.pack(pady=10)
+        # MAIN PAGE
+        self.main_frame = ctk.CTkFrame(self)
+        self.main_frame.pack(fill="both", expand=True)
 
+# DETAIL PAGE (hidden at start)
+        self.detail_frame = ctk.CTkFrame(self)
     # Add Bird panel (hidden by default)
         self.add_frame = ctk.CTkFrame(self)
     
@@ -53,7 +60,7 @@ class App(ctk.CTk):
         self.close_btn.pack(pady=5)
 
     # Bird list
-        self.list_frame = ctk.CTkFrame(self)
+        self.list_frame = ctk.CTkScrollableFrame(self.main_frame)
         self.list_frame.pack(fill="both", expand=True, padx=20, pady=20)
 
         self.add_visible = False
@@ -61,9 +68,11 @@ class App(ctk.CTk):
     def toggle_add_menu(self):
         if self.add_visible:
             self.add_frame.pack_forget()
+            self.open_add_btn.configure(text="➕ Add Bird")
             self.add_visible = False
         else:
             self.add_frame.pack(pady=10)
+            self.open_add_btn.configure(text="✖ Close")
             self.add_visible = True
 
     def add_bird(self):
@@ -100,7 +109,48 @@ class App(ctk.CTk):
                 command=lambda i=i: self.toggle_fav(i)
             )
             fav_btn.pack(side="right", padx=10)
+            frame.bind("<Button-1>", lambda e, i=i: self.show_detail(i))
+            label.bind("<Button-1>", lambda e, i=i: self.show_detail(i))
 
+    def show_main(self):
+        self.detail_frame.pack_forget()
+        self.main_frame.pack(fill="both", expand=True)    
+    
+    def show_detail(self, index):
+        bird = self.data.birds[index]
+
+    # hide main page
+        self.main_frame.pack_forget()
+
+    # clear old detail page
+        for widget in self.detail_frame.winfo_children():
+            widget.destroy()
+
+    # build detail page
+        title = ctk.CTkLabel(self.detail_frame, text=bird["name"], font=("Arial", 20))
+        title.pack(pady=10)
+
+        notes = ctk.CTkLabel(
+        self.detail_frame,
+        text=bird["notes"],
+        wraplength=400
+        )
+        notes.pack(pady=10)
+
+        fav_text = "⭐ Favorite" if bird["favorite"] else "Not Favorite"
+        fav_label = ctk.CTkLabel(self.detail_frame, text=fav_text)
+        fav_label.pack(pady=10)
+
+    # back button
+        back_btn = ctk.CTkButton(
+        self.detail_frame,
+        text="← Back",
+        command=self.show_main
+        )
+        back_btn.pack(pady=20)
+
+    # show detail page
+        self.detail_frame.pack(fill="both", expand=True)
     def toggle_fav(self, index):
         self.data.toggle_favorite(index)
         self.refresh_list()
